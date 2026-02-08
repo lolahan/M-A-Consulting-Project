@@ -59,19 +59,19 @@ export const DEFAULT_PRODUCTS: Product[] = [
     {
         id: 'Legacy',
         name: 'Legacy',
-        profitPerUnit: 20.0, // Source: BTL Product Line Revenue Breakdown (Reported Contribution)
+        profitPerUnit: 19.0, // Updated per User Feedback (was 20.0)
         fixedOutput: [1950000, 1950000, 1950000, 1950000, 1950000]
     },
     {
         id: 'MRI',
         name: 'MRI',
-        profitPerUnit: 40.0, // Source: BTL Product Line Revenue Breakdown (Reported Contribution)
+        profitPerUnit: 37.6, // Updated per User Feedback (was 40.0)
         minOutput: [1537500, 1537500, 1537500, 1537500, 1537500]
     },
     {
         id: 'AI',
         name: 'AI',
-        profitPerUnit: 64.4, // Source: User Update (35% Royalty Case)
+        profitPerUnit: 64.4, // Default (35% Royalty Case). Will be overridden by dynamic calculation.
         // No fixed/min, it fills the slack
     }
 ];

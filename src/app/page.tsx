@@ -22,7 +22,8 @@ export default function Home() {
     deleteScenario,
     updateScenario,
     useFeasibleRevenue,
-    operationalFeasibility
+    operationalFeasibility,
+    setGlobalRoyalty
   } = useRenegoStore();
 
   // Compute Effective Inputs for Analysis (Respecting Toggle)
@@ -63,7 +64,12 @@ export default function Home() {
     field: keyof CalcInputs,
     value: any
   ) => {
-    setInputs((prev) => ({ ...prev, [field]: value }));
+    if (field === 'newRoyaltyRate') {
+      // Sync both Financial Input and Production Model Profit
+      setGlobalRoyalty(Number(value));
+    } else {
+      setInputs((prev) => ({ ...prev, [field]: value }));
+    }
   };
 
   const handleSaveScenario = (newScenario: Scenario) => {
