@@ -33,6 +33,7 @@ export interface DealAnalysis {
   paybackMonths: number | null; // Null if no payback
   ebitdaUplift: number; // Sum of annual savings
   isPaybackWithinExclusivity: boolean;
+  rdConsultantFee?: number; // Total R&D Consultant Fees deducted
 }
 
 /**
@@ -95,7 +96,16 @@ export const computeDealAnalysis = (inputs: CalcInputs): DealAnalysis => {
     annualNewDealRoyalties.push(nRoyalty);
 
     // 3. Savings (Driver of EBITDA Uplift)
-    const savings = bRoyalty - nRoyalty;
+    let savings = bRoyalty - nRoyalty;
+
+    // R&D Consultant Fee Logic:
+    // "Every year there is exclusivity, pay €0.12m (40d * €3000)"
+    // We assume this applies during the defined exclusivity period.
+    const isExclusiveYear = t <= exclusivityYears;
+    if (isExclusiveYear) {
+      savings -= 120000; // Deduct €120k cost
+    }
+
     annualSavings.push(savings);
     ebitdaUplift += savings;
 
@@ -113,7 +123,7 @@ export const computeDealAnalysis = (inputs: CalcInputs): DealAnalysis => {
         // Payback occurred in this year t
         // Fraction of year needed = (Negative Balance at start of year) / (Discounted Cash Flow in this year)
         // Balance at start = |previousCumulativeNPV|
-        // Actually previousCumulativeNPV is net of upfront.
+        // actually previousCumulativeNPV is net of upfront.
         // Let's rely on pure DCF:
         // Uncovered amount at start of year = upfrontFee - (currentNPVOfSavings - discountedSaving)
         const uncoveredAtStart = upfrontFee - (currentNPVOfSavings - discountedSaving);
@@ -141,7 +151,8 @@ export const computeDealAnalysis = (inputs: CalcInputs): DealAnalysis => {
     dealNPV,
     paybackMonths,
     ebitdaUplift,
-    isPaybackWithinExclusivity
+    isPaybackWithinExclusivity,
+    rdConsultantFee: exclusivityYears * 120000 // Approximate total for display
   };
 };
 
