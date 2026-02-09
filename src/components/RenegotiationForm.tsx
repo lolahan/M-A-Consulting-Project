@@ -124,7 +124,7 @@ export default function RenegotiationForm({
     onChange,
 }: RenegotiationFormProps) {
     const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
-    const { operationalFeasibility } = useRenegoStore();
+    const { operationalFeasibility, useFeasibleRevenue, toggleFeasibleRevenue } = useRenegoStore();
 
     // Feasibility Logic
     // Max Units from Production
@@ -176,6 +176,41 @@ export default function RenegotiationForm({
                         </p>
                     </div>
                 </div>
+
+                {/* Target vs Feasible Toggle */}
+                <div className="flex items-center justify-between bg-white/50 p-2 rounded-lg border border-gray-200/50">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase">Valuation Mode:</span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={toggleFeasibleRevenue}
+                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all border ${!useFeasibleRevenue
+                                ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                                : 'bg-white text-gray-400 border-gray-200 hover:text-gray-600'
+                                }`}
+                        >
+                            Target
+                        </button>
+                        <button
+                            onClick={toggleFeasibleRevenue}
+                            className={`px-3 py-1.5 rounded-md text-[10px] font-bold transition-all border ${useFeasibleRevenue
+                                ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                                : 'bg-white text-gray-400 border-gray-200 hover:text-gray-600'
+                                }`}
+                        >
+                            Feasible
+                        </button>
+                    </div>
+                </div>
+
+                {/* Apply Button (Only if feasible data exists) */}
+                {operationalFeasibility.maxAiRevenue.length > 0 && (
+                    <button
+                        onClick={handleApplyFeasible}
+                        className="w-full mt-3 py-2 text-[10px] font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 rounded-lg transition-colors flex items-center justify-center gap-2"
+                    >
+                        <span>⬇ Apply Feasible to Forecast</span>
+                    </button>
+                )}
             </div>
 
             {/* Strategic Parameters */}
